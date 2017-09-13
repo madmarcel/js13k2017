@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+        
+    </style>
+    <script>
+        var myApp = angular.module("myApp", []);
+        myApp.controller("CtrlOne", function ($scope) {
+          $scope.origin = "";
+          $scope.blah = "";
+          $scope.x = 0;
+          $scope.y = 0;
+          $scope.z = 0;
+
+          $scope.output = [];
+
+          $scope.modifiers = [];
+
+          $scope.clear = function() {
+            $scope.output = [];
+            $scope.modifiers = [];
+            $scope.blah = "";
+            $scope.origin = "";
+            $scope.x = 0;
+            $scope.y = 0;
+            $scope.z = 0;
+          };
+
+          $scope.setOrigin = function() {
+            if(!$scope.origin) return;
+              let parts = $scope.origin.trim().split(' ');
+              let x = parseFloat(parts[0]) * -1.0;
+              let y = parseFloat(parts[1]) * -1.0;
+              let z = parseFloat(parts[2]) * -1.0;
+
+              $scope.modifiers.push({
+                  'x': x,
+                  'y': y,
+                  'z': z
+                });
+
+            $scope.x = 0;
+            $scope.y = 0;
+            $scope.z = 0;
+
+            for(let i = 0; i < $scope.modifiers.length; i++) {
+                $scope.x += $scope.modifiers[i].x;
+                $scope.y += $scope.modifiers[i].y;
+                $scope.z += $scope.modifiers[i].z;
+            }
+            $scope.origin = '';
+            //console.log(parts);
+            //console.log($scope.x);
+          }
+
+          $scope.calc = function() {
+            if(!$scope.blah) return;
+            let parts = $scope.blah.trim().split(' ');
+
+            let a = 0;
+            let b = 0;
+            let z = 0;
+
+            let nx = parseFloat(parts[0]);
+            let ny = parseFloat(parts[1]);
+            let nz = parseFloat(parts[2]);
+
+            console.log(nx, ny, nz);
+            a = nx + $scope.x;
+            b = ny + $scope.y;
+            c = nz + $scope.z;
+
+            $scope.output.push("" + $scope.blah + " --> " + a.toFixed(3) + " " + " " + b.toFixed(3) + " " + c.toFixed(3));
+            //console.log($scope.output);
+            $scope.blah = '';
+          }
+        });
+    </script>
+</head>
+<body ng-app="myApp">
+    <div ng-controller="CtrlOne">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Source</span>
+                    <input ng-model="origin" type="text" class="form-control" placeholder="X Y Z" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn btn-primary" ng-click="setOrigin()">Set</button>
+            </div>
+        </div>
+
+        <div class="row" ng-repeat="val in modifiers">
+            <div class="col-md-6"><h4>{{ val.x.toFixed(3) }} {{ val.y.toFixed(3) }} {{ val.z.toFixed(3) }}</h4></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                Offset: <strong>{{ x.toFixed(3) }} {{ y.toFixed(3) }} {{ z.toFixed(3) }}</strong>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">Value</span>
+                    <input ng-model="blah" type="text" class="form-control" placeholder="X Y Z" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn btn-primary" ng-click="calc()">Calc</button>
+            </div>
+        </div>
+
+        <div class="row" ng-repeat="val in output">
+            <div class="col-md-6"><h3>{{ val }}</h3></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <button type="button" class="btn btn-primary" ng-click="clear()">Clear</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
